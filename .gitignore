@@ -1,0 +1,10 @@
+*.db 
+*.tlog
+*.log
+*.obj
+*.pch
+*.ilk
+*.pdb
+*.ipch
+*.idb
+gLimMFCStudy48_Homework/.vs/gLimMFCStudy48_Homework/v15/.suo
