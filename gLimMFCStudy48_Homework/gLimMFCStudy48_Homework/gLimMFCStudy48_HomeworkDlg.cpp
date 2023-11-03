@@ -52,6 +52,10 @@ END_MESSAGE_MAP()
 
 CgLimMFCStudy48HomeworkDlg::CgLimMFCStudy48HomeworkDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_GLIMMFCSTUDY48_HOMEWORK_DIALOG, pParent)
+	, m_nRadius(100)
+	, m_strImgSize(_T(""))
+	, m_strCenterGravityX(_T(""))
+	, m_strCenterGravityY(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -59,12 +63,21 @@ CgLimMFCStudy48HomeworkDlg::CgLimMFCStudy48HomeworkDlg(CWnd* pParent /*=nullptr*
 void CgLimMFCStudy48HomeworkDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SCREEN, m_ctlScreen);
+	DDX_Text(pDX, IDC_RADIUS, m_nRadius);
+	DDX_Text(pDX, IDC_STATIC_SIZE, m_strImgSize);
+	DDX_Text(pDX, IDC_EDIT_X, m_strCenterGravityX);
+	DDX_Text(pDX, IDC_EDIT_Y, m_strCenterGravityY);
 }
 
 BEGIN_MESSAGE_MAP(CgLimMFCStudy48HomeworkDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDOK, &CgLimMFCStudy48HomeworkDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CgLimMFCStudy48HomeworkDlg::OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_MakeCircel, &CgLimMFCStudy48HomeworkDlg::OnBnClickedMakecircel)
+	ON_BN_CLICKED(IDC_GRAVITY, &CgLimMFCStudy48HomeworkDlg::OnBnClickedGravity)
 END_MESSAGE_MAP()
 
 
@@ -99,7 +112,11 @@ BOOL CgLimMFCStudy48HomeworkDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
+
+	//이미지 사이즈 표시 
+	m_strImgSize.Format(_T("%d x %d"), m_ctlScreen.GetImageWidth(), m_ctlScreen.GetImageHeight());
+	UpdateData(false);
+
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -153,3 +170,46 @@ HCURSOR CgLimMFCStudy48HomeworkDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CgLimMFCStudy48HomeworkDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	CDialogEx::OnOK();
+}
+
+
+void CgLimMFCStudy48HomeworkDlg::OnBnClickedCancel()
+{
+	// TODO: Add your control notification handler code here
+	CDialogEx::OnCancel();
+}
+
+
+void CgLimMFCStudy48HomeworkDlg::OnBnClickedMakecircel()
+{
+	//clear
+	m_ctlScreen.onClearImage();
+
+	//update m_nRadius
+	UpdateData();
+	
+	int xPos = rand() % m_ctlScreen.GetImageWidth();
+	int yPos = rand() % m_ctlScreen.GetImageHeight();
+
+	m_ctlScreen.onDrawCircel(xPos, yPos, m_nRadius);
+}
+
+
+void CgLimMFCStudy48HomeworkDlg::OnBnClickedGravity()
+{
+	
+	DPOINT dCenterGravity;
+	dCenterGravity = m_ctlScreen.GetImageCenterGravity();
+
+	//update 
+	m_strCenterGravityX.Format(_T("%3.2f"), dCenterGravity.x);
+	m_strCenterGravityY.Format(_T("%3.2f"), dCenterGravity.y);
+	UpdateData(false);
+
+	m_ctlScreen.onDrawTargetMark(dCenterGravity, m_nRadius/10);
+}
